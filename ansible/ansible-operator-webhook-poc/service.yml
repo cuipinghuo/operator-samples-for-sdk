@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: validating-operator-webhook
+spec:
+  ports:
+  - name: webhook
+    port: 443
+    protocol: TCP
+    # Change targetPort to match the port your server is listening on
+    targetPort: 5000
+  selector:
+    # Change this selector to match the labels on your operator pod
+    name: validating-operator
+  type: ClusterIP

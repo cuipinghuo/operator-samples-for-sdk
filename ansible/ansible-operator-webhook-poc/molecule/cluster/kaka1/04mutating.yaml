@@ -1,0 +1,22 @@
+    apiVersion: admissionregistration.k8s.io/v1
+    kind: MutatingWebhookConfiguration
+    metadata:
+      name: mutating-test.fabianism.us
+      annotations:
+        certmanager.k8s.io/inject-ca-from: 'kaka/webhook-testing'
+    webhooks:
+    - name: "mutating-test.fabianism.us"
+      rules:
+      - apiGroups:   ["test.fabianism.us"]
+        apiVersions: ["*"]
+        operations:  ["CREATE"]
+        resources:   ["validatingtests"]
+        scope:       "Namespaced"
+      clientConfig:
+        service:
+          namespace: kaka
+          name: webhooks
+          path: /mutating
+      admissionReviewVersions: ["v1"]
+      timeoutSeconds: 5
+      sideEffects: None

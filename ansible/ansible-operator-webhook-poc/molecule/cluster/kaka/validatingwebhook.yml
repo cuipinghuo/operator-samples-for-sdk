@@ -1,0 +1,23 @@
+    apiVersion: admissionregistration.k8s.io/v1
+    kind: ValidatingWebhookConfiguration
+    metadata:
+      name: validating-test.fabianism.us
+      annotations:
+        certmanager.k8s.io/inject-ca-from: 'kaka/webhook-testing'
+    webhooks:
+    - name: validating-test.fabianism.us
+      rules:
+      - apiGroups:   ["test.fabianism.us"]
+        apiVersions: ["*"]
+        operations:  ["CREATE"]
+        resources:   ["validatingtests"]
+        scope:       "Namespaced"
+      clientConfig:
+        caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURRekNDQWl1Z0F3SUJBZ0lSQU0ySi90N09Xb21rRjlOeGlGK2E1bGt3RFFZSktvWklodmNOQVFFTEJRQXcKUURFY01Cb0dBMVVFQ2hNVFkyVnlkQzF0WVc1aFoyVnlMbk41YzNSbGJURWdNQjRHQTFVRUF4TVhZMlZ5ZEMxdApZVzVoWjJWeUxuZGxZbWh2YjJzdVkyRXdIaGNOTWpBd05ESXpNREl4T0RVMldoY05NalV3TkRJeU1ESXhPRFUyCldqQkFNUnd3R2dZRFZRUUtFeE5qWlhKMExXMWhibUZuWlhJdWMzbHpkR1Z0TVNBd0hnWURWUVFERXhkalpYSjAKTFcxaGJtRm5aWEl1ZDJWaWFHOXZheTVqWVRDQ0FTSXdEUVlKS29aSWh2Y05BUUVCQlFBRGdnRVBBRENDQVFvQwpnZ0VCQUwzWHN3aWpUTFdwcXpiTFBLTUF2K3R6ZDZvOVRhQ2lCaVRwK2Vwbmg3b3M0V1dIa0cvTzE4OEc0K2x2CmF5bnd1MHNDM1hBSDlGQ0hRd1grK3dORXVpU2JLM09zcS9aSVdVNWYxR1FlVGlDTGRHSEJEenlhTHkzNlFZdFgKdlVabS9jUmJ3dDZFRWQ3RjIzc2JhVktqRE95R254WlV5MlpMQm56NlBVMW1OQ2lDTm1TMFd3UENWT2pqVUxRLwptTmh4QXBDVGNBL0xuQnVZY2p1eVRmbEFLckNKYmRxWkcySXYyWVdZYmF1ajRiNUdPUkJrRjFlM295ZGQyVUJ1ClpRbUNiNEZWZ3R5cEo1aXU5K1hZcEdsMlFlN1hZMnk1V0NtNnRUeFVQQU9sdGZEN3BNLzhTOSt2MGpQeUdVOUMKYkFiKy84NXgyVUVTclBYaWZiTjRkZ0JlYVRjQ0F3RUFBYU00TURZd0RnWURWUjBQQVFIL0JBUURBZ0trTUJNRwpBMVVkSlFRTU1Bb0dDQ3NHQVFVRkJ3TUJNQThHQTFVZEV3RUIvd1FGTUFNQkFmOHdEUVlKS29aSWh2Y05BUUVMCkJRQURnZ0VCQUxHT1V5WUpQSXN1WC85aXBRdjM3V0tTNWo3ZFJrdDI4N2F3bDNCV1FxUjVscXpIZm5iSDk4VEIKOFJaSlMvQytBK29rUGhlTEQ5WWJaNXNpb1pDdDY2aHdMRkEvZ3RrZWMwMlYwWEZkczRxOUFzVVA1eHlwTUZHSgpSSmhmbXN4cVh4YzZ4dG50bitWNUpJQm0wUTQzSnpQSXFEdXlkb0RYMFNjMk5RaURBUksrc0FWMEd0d2JrdDlJCkRrR3JNczluUG5STm01ak5IdGV6MUl3RWx6QmJLSVhNQjdBSmFVYmtOZW1iTnQ4SURRdklIbUJkdkRuNzFFSGYKZlV3dUdjUDY4eTNZRXU5SW1qdFdKb1ZCLzVWTDFBZmx2NFpYeDE5WVVOcE5UMVQ2TVc0TUMyV2NVb29OTWxiUgpsOE8wTnREUmJqbjQvR3JiSXZhaHQzNHpDa2lWYzlFPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
+        service:
+          namespace: kaka
+          name: webhooks
+          path: /validating
+      failurePolicy: Fail
+      sideEffects: None
+      admissionReviewVersions: ["v1"]

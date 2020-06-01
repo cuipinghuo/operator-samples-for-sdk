@@ -1,0 +1,213 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: ClusterServiceVersion
+metadata:
+  annotations:
+    alm-examples: |-
+      [
+        {
+          "apiVersion": "test.fabianism.us/v1alpha1",
+          "kind": "ValidatingTest",
+          "metadata": {
+            "name": "example-validatingtest"
+          },
+          "spec": {
+            "size": 3
+          }
+        }
+      ]
+    capabilities: Basic Install
+  name: ansible-operator-webhook-poc.v
+  namespace: placeholder
+spec:
+  apiservicedefinitions: {}
+  customresourcedefinitions:
+    owned:
+    - kind: ValidatingTest
+      name: validatingtests.test.fabianism.us
+      version: v1alpha1
+  description: kaka
+  displayName: kaka
+  icon:
+  - base64data: ""
+    mediatype: ""
+  install:
+    spec:
+      deployments:
+      - name: validating-operator
+        spec:
+          replicas: 1
+          selector:
+            matchLabels:
+              name: validating-operator
+          strategy: {}
+          template:
+            metadata:
+              labels:
+                name: validating-operator
+            spec:
+              containers:
+              - env:
+                - name: WATCH_NAMESPACE
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.annotations['olm.targetNamespaces']
+                - name: POD_NAME
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.name
+                - name: OPERATOR_NAME
+                  value: validating-operator
+                - name: ANSIBLE_GATHERING
+                  value: explicit
+                image: quay.io/jfan/validat-operator:v1.0.0
+                imagePullPolicy: Always
+                name: validating-operator
+                resources: {}
+                volumeMounts:
+                - mountPath: /tmp/ansible-operator/runner
+                  name: runner
+              - image: quay.io/jfan/webhook-operator:v1.0.0
+                imagePullPolicy: Always
+                name: webhooks
+                resources: {}
+                volumeMounts:
+                - mountPath: /app/tls/
+                  name: webhook-testing-cert
+              serviceAccountName: validating-operator
+              volumes:
+              - emptyDir: {}
+                name: runner
+              - name: webhook-testing-cert
+                secret:
+                  secretName: webhook-testing-cert
+      permissions:
+      - rules:
+        - apiGroups:
+          - ""
+          resources:
+          - pods
+          - services
+          - services/finalizers
+          - endpoints
+          - persistentvolumeclaims
+          - events
+          - configmaps
+          - secrets
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - apps
+          resources:
+          - deployments
+          - daemonsets
+          - replicasets
+          - statefulsets
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - monitoring.coreos.com
+          resources:
+          - servicemonitors
+          verbs:
+          - get
+          - create
+        - apiGroups:
+          - apps
+          resourceNames:
+          - validating-operator
+          resources:
+          - deployments/finalizers
+          verbs:
+          - update
+        - apiGroups:
+          - ""
+          resources:
+          - pods
+          verbs:
+          - get
+        - apiGroups:
+          - apps
+          resources:
+          - replicasets
+          - deployments
+          verbs:
+          - get
+        - apiGroups:
+          - test.fabianism.us
+          resources:
+          - '*'
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        serviceAccountName: validating-operator
+    strategy: deployment
+  installModes:
+  - supported: true
+    type: OwnNamespace
+  - supported: true
+    type: SingleNamespace
+  - supported: false
+    type: MultiNamespace
+  - supported: true
+    type: AllNamespaces
+  keywords:
+  - kaka
+  maturity: alpha
+  provider:
+    name: kaka
+    url: kaka
+  version: 0.0.0
+  webhookdefinitions:
+  - admissionReviewVersions:
+    - v1
+    deploymentName: webhooks
+    failurePolicy: Fail
+    generateName: validating-test.fabianism.us
+    rules:
+    - apiGroups:
+      - test.fabianism.us
+      apiVersions:
+      - '*'
+      operations:
+      - CREATE
+      resources:
+      - validatingtests
+      scope: Namespaced
+    sideEffects: None
+    type: ValidatingAdmissionWebhook
+    webhookPath: /validating
+  - admissionReviewVersions:
+    - v1
+    deploymentName: webhooks
+    generateName: mutating-test.fabianism.us
+    rules:
+    - apiGroups:
+      - test.fabianism.us
+      apiVersions:
+      - '*'
+      operations:
+      - CREATE
+      resources:
+      - validatingtests
+      scope: Namespaced
+    sideEffects: None
+    timeoutSeconds: 5
+    type: MutatingAdmissionWebhook
+    webhookPath: /mutating

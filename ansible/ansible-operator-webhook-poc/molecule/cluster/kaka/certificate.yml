@@ -1,0 +1,14 @@
+      apiVersion: cert-manager.io/v1alpha2
+      kind: Certificate
+      metadata:
+        name: webhook-testing
+        namespace: kaka
+      spec:
+        secretName: webhook-testing-cert
+        commonName: "webhook-testing-root-ca"
+        dnsNames:
+        - webhooks.kaka.svc
+        isCA: true
+        issuerRef:
+          name: selfsigning-issuer
+          kind: ClusterIssuer
