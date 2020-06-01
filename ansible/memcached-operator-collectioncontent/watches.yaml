@@ -1,0 +1,11 @@
+---
+- version: v1alpha1
+  group: cache.example.com
+  kind: Memcached
+  role: memcached
+  manageStatus: false
+
+- version: v1alpha1
+  group: cache.example.com
+  kind: CollectionTest
+  role: operator_sdk.test_fixtures.dummy
