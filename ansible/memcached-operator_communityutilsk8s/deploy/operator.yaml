@@ -17,7 +17,7 @@ spec:
       containers:
         - name: memcached-operator
           # Replace this with the built image name
-          image: quay.io/jfan/memcached-operator:v23.0.2
+          image: quay.io/jfan/memcached-operator:v37.4.5
           imagePullPolicy: "Always"
           volumeMounts:
           - mountPath: /tmp/ansible-operator/runner
